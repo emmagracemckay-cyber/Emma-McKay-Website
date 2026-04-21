@@ -1,0 +1,1351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Emma McKay | Interactive Story Book</title>
+<meta name="description" content="An interactive storybook by Emma McKay where readers choose a genre and shape their own ending.">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=Cinzel:wght@400;600&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    min-height: 100vh;
+    background: radial-gradient(ellipse at 50% 30%, #2a1f0e 0%, #0d0a05 60%, #050301 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    overflow: hidden;
+    position: relative;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      radial-gradient(ellipse 600px 400px at 20% 20%, rgba(180,140,60,0.06) 0%, transparent 70%),
+      radial-gradient(ellipse 400px 300px at 80% 80%, rgba(160,100,40,0.05) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .dust-particles {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    overflow: hidden;
+  }
+
+  .particle {
+    position: absolute;
+    width: 2px;
+    height: 2px;
+    background: rgba(210,175,100,0.4);
+    border-radius: 50%;
+    animation: floatUp linear infinite;
+  }
+
+  @keyframes floatUp {
+    0% { transform: translateY(100vh) translateX(0); opacity: 0; }
+    10% { opacity: 1; }
+    90% { opacity: 0.3; }
+    100% { transform: translateY(-20px) translateX(30px); opacity: 0; }
+  }
+
+  #app {
+    width: 100%;
+    max-width: 900px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .top-link {
+    align-self: flex-start;
+    margin-bottom: 16px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .top-link a {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 16px;
+    border: 1px solid rgba(210,175,100,0.3);
+    border-radius: 999px;
+    background: rgba(24,16,8,0.72);
+    color: #ead8b0;
+    font-family: 'Cinzel', Georgia, serif;
+    font-size: 0.88rem;
+    letter-spacing: 0.08em;
+    text-decoration: none;
+    text-transform: uppercase;
+    box-shadow: 0 12px 24px rgba(0,0,0,0.28);
+    transition: transform 0.2s ease, background 0.2s ease, color 0.2s ease;
+  }
+
+  .top-link a:hover,
+  .top-link a:focus {
+    background: rgba(44,28,13,0.82);
+    color: #f6e8c8;
+    transform: translateY(-1px);
+  }
+
+  /* BOOK CONTAINER */
+  .book-scene {
+    perspective: 2000px;
+    width: 100%;
+    max-width: 860px;
+  }
+
+  .book {
+    position: relative;
+    width: 100%;
+    display: flex;
+    filter: drop-shadow(0 30px 60px rgba(0,0,0,0.8)) drop-shadow(0 5px 20px rgba(0,0,0,0.6));
+    transform-style: preserve-3d;
+    animation: bookSettle 1.2s cubic-bezier(0.34,1.56,0.64,1) forwards;
+  }
+
+  @keyframes bookSettle {
+    0% { transform: rotateX(20deg) translateY(40px) scale(0.92); opacity: 0; }
+    100% { transform: rotateX(4deg) translateY(0) scale(1); opacity: 1; }
+  }
+
+  .book-spine {
+    width: 28px;
+    background: linear-gradient(to right, #2a1800, #5a3a10, #3d2508, #6b4618, #3d2508);
+    border-radius: 4px 0 0 4px;
+    flex-shrink: 0;
+    position: relative;
+    z-index: 10;
+    box-shadow: inset -4px 0 8px rgba(0,0,0,0.5), 3px 0 8px rgba(0,0,0,0.4);
+  }
+
+  .book-spine::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(to bottom, transparent 0px, transparent 20px, rgba(0,0,0,0.15) 20px, rgba(0,0,0,0.15) 21px);
+  }
+
+  .book-pages {
+    display: flex;
+    flex: 1;
+    min-height: 560px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .page {
+    flex: 1;
+    position: relative;
+    padding: 40px 44px;
+    display: flex;
+    flex-direction: column;
+    min-height: 560px;
+    overflow: hidden;
+  }
+
+  .page-left {
+    background: linear-gradient(105deg, #f5edda 0%, #ede0c4 30%, #f0e4c8 60%, #e8d8b4 100%);
+    border-right: 1px solid #c4a97a;
+    box-shadow: inset -8px 0 16px rgba(0,0,0,0.08), 3px 0 6px rgba(0,0,0,0.15);
+  }
+
+  .page-right {
+    background: linear-gradient(75deg, #ede0c4 0%, #f5edda 30%, #ece0c6 60%, #f2e6cc 100%);
+    box-shadow: inset 8px 0 16px rgba(0,0,0,0.05);
+  }
+
+  /* Paper texture overlay */
+  .page::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    opacity: 0.6;
+  }
+
+  /* Page lines */
+  .page-right::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: repeating-linear-gradient(
+      to bottom,
+      transparent 0px,
+      transparent 31px,
+      rgba(180,150,90,0.12) 31px,
+      rgba(180,150,90,0.12) 32px
+    );
+    background-position: 0 52px;
+    pointer-events: none;
+  }
+
+  /* Gold ornamental border */
+  .page-border {
+    position: absolute;
+    inset: 16px;
+    border: 1px solid rgba(180,145,70,0.35);
+    pointer-events: none;
+    border-radius: 1px;
+  }
+
+  .page-border::before {
+    content: '';
+    position: absolute;
+    inset: 4px;
+    border: 0.5px solid rgba(180,145,70,0.18);
+    border-radius: 1px;
+  }
+
+  /* Corner ornaments */
+  .corner-ornament {
+    position: absolute;
+    width: 24px;
+    height: 24px;
+    opacity: 0.5;
+  }
+  .corner-ornament svg { width: 100%; height: 100%; }
+  .co-tl { top: 18px; left: 18px; }
+  .co-tr { top: 18px; right: 18px; transform: scaleX(-1); }
+  .co-bl { bottom: 18px; left: 18px; transform: scaleY(-1); }
+  .co-br { bottom: 18px; right: 18px; transform: scale(-1,-1); }
+
+  /* PAGE TURN ANIMATION */
+  .page-turn-overlay {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 100;
+    transform-origin: left center;
+    transform: rotateY(0deg);
+    transform-style: preserve-3d;
+  }
+
+  .page-turning {
+    animation: pageTurn 0.7s cubic-bezier(0.4,0,0.2,1) forwards;
+  }
+
+  @keyframes pageTurn {
+    0% { transform: rotateY(0deg); opacity: 1; }
+    50% { transform: rotateY(-90deg); opacity: 0.7; }
+    100% { transform: rotateY(-180deg); opacity: 0; }
+  }
+
+  /* CONTENT SECTIONS */
+  .content-area {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    z-index: 2;
+  }
+
+  /* OPENING SCREEN */
+  .opening-screen {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    text-align: center;
+    gap: 20px;
+  }
+
+  .book-icon-anim {
+    animation: bookFloat 3s ease-in-out infinite;
+  }
+
+  @keyframes bookFloat {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+  }
+
+  .main-title {
+    font-family: 'Cinzel', serif;
+    font-size: 2.2em;
+    font-weight: 600;
+    color: #4a2e0a;
+    letter-spacing: 0.12em;
+    text-shadow: 0 1px 2px rgba(255,255,255,0.4);
+    line-height: 1.2;
+  }
+
+  .main-title span {
+    display: block;
+    font-size: 0.45em;
+    letter-spacing: 0.3em;
+    color: #8a6030;
+    font-weight: 400;
+    margin-top: 8px;
+  }
+
+  .divider-ornament {
+    color: #b8952a;
+    font-size: 1.4em;
+    letter-spacing: 0.3em;
+    opacity: 0.7;
+  }
+
+  .opening-text {
+    font-family: 'IM Fell English', serif;
+    font-style: italic;
+    color: #5a3a18;
+    font-size: 1.0em;
+    line-height: 1.8;
+    max-width: 280px;
+  }
+
+  .begin-btn {
+    margin-top: 12px;
+    padding: 12px 36px;
+    background: linear-gradient(135deg, #7a5020, #5a3010, #7a5020);
+    border: 1px solid rgba(180,145,70,0.6);
+    color: #f0dca0;
+    font-family: 'Cinzel', serif;
+    font-size: 0.85em;
+    letter-spacing: 0.2em;
+    cursor: pointer;
+    border-radius: 2px;
+    transition: all 0.3s;
+    text-transform: uppercase;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.1);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .begin-btn::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, transparent 40%, rgba(255,220,120,0.1) 100%);
+  }
+
+  .begin-btn:hover {
+    background: linear-gradient(135deg, #9a6830, #7a4820, #9a6830);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.4), 0 0 20px rgba(180,145,70,0.2), inset 0 1px 0 rgba(255,255,255,0.15);
+    transform: translateY(-1px);
+  }
+
+  /* STORY CONTENT */
+  .chapter-label {
+    font-family: 'Cinzel', serif;
+    font-size: 0.62em;
+    letter-spacing: 0.35em;
+    color: #b8952a;
+    text-transform: uppercase;
+    text-align: center;
+    margin-bottom: 8px;
+    opacity: 0.8;
+  }
+
+  .story-heading {
+    font-family: 'Cinzel', serif;
+    font-size: 1.05em;
+    font-weight: 600;
+    color: #3a2208;
+    text-align: center;
+    letter-spacing: 0.06em;
+    line-height: 1.4;
+    margin-bottom: 12px;
+  }
+
+  .scene-divider {
+    text-align: center;
+    color: #b8952a;
+    font-size: 1em;
+    letter-spacing: 0.5em;
+    margin: 8px 0;
+    opacity: 0.6;
+  }
+
+  .story-text {
+    font-family: 'IM Fell English', serif;
+    font-size: 0.93em;
+    color: #3a2208;
+    line-height: 1.85;
+    text-align: justify;
+    hyphens: auto;
+    flex: 1;
+  }
+
+  .story-text em {
+    font-style: italic;
+    color: #5a3a18;
+  }
+
+  /* Page number */
+  .page-number {
+    text-align: center;
+    font-family: 'Cinzel', serif;
+    font-size: 0.6em;
+    color: #a07840;
+    letter-spacing: 0.2em;
+    margin-top: 16px;
+    opacity: 0.7;
+  }
+
+  /* CHOICES PANEL */
+  .choices-heading {
+    font-family: 'Cinzel', serif;
+    font-size: 0.68em;
+    letter-spacing: 0.25em;
+    color: #b8952a;
+    text-align: center;
+    margin-bottom: 14px;
+    text-transform: uppercase;
+  }
+
+  .choices-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    flex: 1;
+  }
+
+  .choice-btn {
+    background: linear-gradient(to bottom, rgba(255,245,220,0.7), rgba(240,225,190,0.5));
+    border: 1px solid rgba(160,120,50,0.4);
+    padding: 12px 16px;
+    cursor: pointer;
+    font-family: 'IM Fell English', serif;
+    font-size: 0.88em;
+    color: #3a2208;
+    text-align: left;
+    border-radius: 2px;
+    transition: all 0.25s;
+    position: relative;
+    line-height: 1.45;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+  }
+
+  .choice-btn::before {
+    content: '❧';
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #b8952a;
+    font-size: 0.9em;
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+
+  .choice-btn:hover {
+    background: linear-gradient(to bottom, rgba(255,250,230,0.95), rgba(248,235,205,0.9));
+    border-color: rgba(160,120,50,0.7);
+    padding-left: 30px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.12), inset 0 1px 0 rgba(255,255,255,0.5);
+    transform: translateX(2px);
+  }
+
+  .choice-btn:hover::before { opacity: 1; }
+
+  .choice-btn.selected {
+    background: linear-gradient(to bottom, #e8d090, #d4b870);
+    border-color: rgba(160,120,50,0.8);
+    color: #2a1800;
+    font-weight: 500;
+  }
+
+  /* Genre choices - 2x2 grid */
+  .genre-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    flex: 1;
+    align-content: center;
+  }
+
+  .genre-btn {
+    background: linear-gradient(135deg, rgba(255,245,220,0.8), rgba(235,215,180,0.6));
+    border: 1px solid rgba(160,120,50,0.4);
+    padding: 20px 12px;
+    cursor: pointer;
+    font-family: 'Cinzel', serif;
+    font-size: 0.78em;
+    color: #3a2208;
+    text-align: center;
+    border-radius: 3px;
+    transition: all 0.3s;
+    letter-spacing: 0.1em;
+    line-height: 1.6;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  }
+
+  .genre-btn .genre-icon {
+    display: block;
+    font-size: 1.8em;
+    margin-bottom: 8px;
+    line-height: 1;
+  }
+
+  .genre-btn .genre-sub {
+    display: block;
+    font-family: 'IM Fell English', serif;
+    font-style: italic;
+    font-size: 0.85em;
+    color: #7a5530;
+    font-weight: 400;
+    letter-spacing: 0;
+    margin-top: 3px;
+  }
+
+  .genre-btn:hover {
+    background: linear-gradient(135deg, rgba(255,250,230,0.95), rgba(248,235,200,0.9));
+    border-color: rgba(180,140,60,0.7);
+    box-shadow: 0 4px 14px rgba(0,0,0,0.15), inset 0 1px 0 rgba(255,255,255,0.6);
+    transform: translateY(-2px);
+  }
+
+  /* RESULT PAGE */
+  .result-page {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    height: 100%;
+    justify-content: space-between;
+  }
+
+  .result-badge {
+    background: linear-gradient(135deg, #7a5020, #4a2e0a);
+    border: 2px solid rgba(200,165,80,0.7);
+    border-radius: 50%;
+    width: 90px;
+    height: 90px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.4em;
+    box-shadow: 0 0 30px rgba(180,145,70,0.25), 0 4px 12px rgba(0,0,0,0.3);
+    margin: 0 auto;
+    animation: badgeReveal 0.8s cubic-bezier(0.34,1.56,0.64,1) forwards;
+  }
+
+  @keyframes badgeReveal {
+    0% { transform: scale(0) rotate(-30deg); opacity: 0; }
+    100% { transform: scale(1) rotate(0deg); opacity: 1; }
+  }
+
+  .reader-type {
+    font-family: 'Cinzel', serif;
+    font-size: 1.0em;
+    font-weight: 600;
+    color: #3a2208;
+    letter-spacing: 0.08em;
+    line-height: 1.4;
+  }
+
+  .reader-desc {
+    font-family: 'IM Fell English', serif;
+    font-style: italic;
+    color: #5a3a18;
+    font-size: 0.9em;
+    line-height: 1.7;
+    max-width: 280px;
+    margin: 0 auto;
+  }
+
+  .hea-text {
+    font-family: 'Cinzel', serif;
+    font-size: 1.1em;
+    font-weight: 600;
+    color: #7a5020;
+    letter-spacing: 0.25em;
+    text-align: center;
+    animation: fadeInUp 1s ease forwards;
+  }
+
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .star-row {
+    color: #c8a82a;
+    font-size: 1.1em;
+    letter-spacing: 0.2em;
+    animation: starsReveal 1.5s ease forwards;
+  }
+
+  @keyframes starsReveal {
+    from { opacity: 0; letter-spacing: 0.8em; }
+    to { opacity: 1; letter-spacing: 0.2em; }
+  }
+
+  /* FADE IN ANIMATION */
+  .fade-in {
+    animation: fadeContent 0.6s ease forwards;
+  }
+
+  @keyframes fadeContent {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* PAGE CURL */
+  .page-curl {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 32px;
+    height: 32px;
+    background: linear-gradient(225deg, #d4b870 0%, #f0e4c8 50%, transparent 51%);
+    clip-path: polygon(100% 0, 100% 100%, 0 100%);
+    opacity: 0.6;
+    pointer-events: none;
+  }
+
+  /* BOOK CLOSE ANIMATION */
+  .book-closing-left {
+    animation: closeLeft 1.2s cubic-bezier(0.4,0,0.2,1) forwards;
+    transform-origin: right center;
+  }
+
+  .book-closing-right {
+    animation: closeRight 1.2s cubic-bezier(0.4,0,0.2,1) forwards;
+    transform-origin: left center;
+  }
+
+  @keyframes closeLeft {
+    0% { transform: rotateY(0deg); }
+    100% { transform: rotateY(90deg); }
+  }
+
+  @keyframes closeRight {
+    0% { transform: rotateY(0deg); }
+    100% { transform: rotateY(-90deg); }
+  }
+
+  .book-closed-final {
+    animation: bookClose 1.4s cubic-bezier(0.4,0,0.2,1) 0.8s forwards;
+  }
+
+  @keyframes bookClose {
+    0% { transform: rotateX(4deg) scaleX(1); }
+    50% { transform: rotateX(4deg) scaleX(0.1); }
+    100% { transform: rotateX(4deg) scaleX(0.1) translateY(30px); opacity: 0.6; }
+  }
+
+  /* PROGRESS DOTS */
+  .progress-dots {
+    display: flex;
+    gap: 6px;
+    justify-content: center;
+    margin-top: 12px;
+  }
+
+  .dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: rgba(160,120,50,0.3);
+    border: 1px solid rgba(160,120,50,0.4);
+    transition: all 0.3s;
+  }
+
+  .dot.active {
+    background: #b8952a;
+    border-color: #b8952a;
+    transform: scale(1.2);
+  }
+
+  .dot.done {
+    background: rgba(120,90,30,0.6);
+    border-color: rgba(120,90,30,0.6);
+  }
+
+  /* mobile */
+  @media (max-width: 600px) {
+    .book-pages { min-height: 480px; }
+    .page { padding: 24px 22px; }
+    .main-title { font-size: 1.6em; }
+    .story-text { font-size: 0.85em; }
+    .choice-btn { font-size: 0.82em; padding: 10px 14px; }
+    .genre-btn { padding: 14px 8px; font-size: 0.72em; }
+  }
+</style>
+</head>
+<body>
+
+<div class="dust-particles" id="particles"></div>
+
+<div id="app">
+  <div class="top-link">
+    <a href="index.html">&#8592; Back to Home</a>
+    <a href="scratch.html">&#8592; Back to Scratch</a>
+  </div>
+  <div class="book-scene">
+    <div class="book" id="book">
+      <div class="book-spine" id="spine"></div>
+      <div class="book-pages" id="bookPages">
+
+        <!-- LEFT PAGE -->
+        <div class="page page-left" id="pageLeft">
+          <div class="page-border"></div>
+          <div class="corner-ornament co-tl"><svg viewBox="0 0 24 24" fill="none"><path d="M2 2 Q8 2 8 8 Q8 14 14 14 Q20 14 20 20" stroke="#b8952a" stroke-width="1.2" fill="none"/><circle cx="2" cy="2" r="1.5" fill="#b8952a"/><circle cx="20" cy="20" r="1.5" fill="#b8952a"/></svg></div>
+          <div class="corner-ornament co-tr"><svg viewBox="0 0 24 24" fill="none"><path d="M2 2 Q8 2 8 8 Q8 14 14 14 Q20 14 20 20" stroke="#b8952a" stroke-width="1.2" fill="none"/><circle cx="2" cy="2" r="1.5" fill="#b8952a"/><circle cx="20" cy="20" r="1.5" fill="#b8952a"/></svg></div>
+          <div class="corner-ornament co-bl"><svg viewBox="0 0 24 24" fill="none"><path d="M2 2 Q8 2 8 8 Q8 14 14 14 Q20 14 20 20" stroke="#b8952a" stroke-width="1.2" fill="none"/><circle cx="2" cy="2" r="1.5" fill="#b8952a"/><circle cx="20" cy="20" r="1.5" fill="#b8952a"/></svg></div>
+          <div class="corner-ornament co-br"><svg viewBox="0 0 24 24" fill="none"><path d="M2 2 Q8 2 8 8 Q8 14 14 14 Q20 14 20 20" stroke="#b8952a" stroke-width="1.2" fill="none"/><circle cx="2" cy="2" r="1.5" fill="#b8952a"/><circle cx="20" cy="20" r="1.5" fill="#b8952a"/></svg></div>
+          <div class="content-area" id="leftContent">
+            <!-- dynamic -->
+          </div>
+          <div class="page-number" id="leftPageNum"></div>
+          <div class="page-curl"></div>
+        </div>
+
+        <!-- RIGHT PAGE -->
+        <div class="page page-right" id="pageRight">
+          <div class="page-border"></div>
+          <div class="corner-ornament co-tl"><svg viewBox="0 0 24 24" fill="none"><path d="M2 2 Q8 2 8 8 Q8 14 14 14 Q20 14 20 20" stroke="#b8952a" stroke-width="1.2" fill="none"/><circle cx="2" cy="2" r="1.5" fill="#b8952a"/><circle cx="20" cy="20" r="1.5" fill="#b8952a"/></svg></div>
+          <div class="corner-ornament co-tr"><svg viewBox="0 0 24 24" fill="none"><path d="M2 2 Q8 2 8 8 Q8 14 14 14 Q20 14 20 20" stroke="#b8952a" stroke-width="1.2" fill="none"/><circle cx="2" cy="2" r="1.5" fill="#b8952a"/><circle cx="20" cy="20" r="1.5" fill="#b8952a"/></svg></div>
+          <div class="corner-ornament co-bl"><svg viewBox="0 0 24 24" fill="none"><path d="M2 2 Q8 2 8 8 Q8 14 14 14 Q20 14 20 20" stroke="#b8952a" stroke-width="1.2" fill="none"/><circle cx="2" cy="2" r="1.5" fill="#b8952a"/><circle cx="20" cy="20" r="1.5" fill="#b8952a"/></svg></div>
+          <div class="corner-ornament co-br"><svg viewBox="0 0 24 24" fill="none"><path d="M2 2 Q8 2 8 8 Q8 14 14 14 Q20 14 20 20" stroke="#b8952a" stroke-width="1.2" fill="none"/><circle cx="2" cy="2" r="1.5" fill="#b8952a"/><circle cx="20" cy="20" r="1.5" fill="#b8952a"/></svg></div>
+          <div class="content-area" id="rightContent">
+            <!-- dynamic -->
+          </div>
+          <div class="page-number" id="rightPageNum"></div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// Particles
+(function(){
+  const c = document.getElementById('particles');
+  for(let i=0;i<18;i++){
+    const d = document.createElement('div');
+    d.className='particle';
+    d.style.left = Math.random()*100+'%';
+    d.style.animationDuration = (8+Math.random()*14)+'s';
+    d.style.animationDelay = (Math.random()*10)+'s';
+    d.style.opacity = Math.random()*0.6;
+    d.style.width = d.style.height = (1+Math.random()*2.5)+'px';
+    c.appendChild(d);
+  }
+})();
+
+// ── STORY DATA ──────────────────────────────────────────────────
+const STORIES = {
+  fantasy: {
+    title: "The Starweaver's Path",
+    chapter: "Chapter I — The Awakening",
+    steps: [
+      {
+        leftTitle: "The Starweaver's Path",
+        leftText: `In the realm of Aethelmoor, where mountains breathe silver mist and rivers sing lullabies to drowsy stars, you were born with a rare gift: the ability to weave dreams into reality.\n\nOne autumn evening, a shimmering fox with seven tails appears at your door, carrying a message sealed with stardust.\n\n<em>"The ancient loom has broken,"</em> it whispers, <em>"and the world's magic unravels thread by thread. Only the Starweaver may mend it."</em>`,
+        rightTitle: "Who do you become?",
+        rightSub: "Choose your character",
+        choices: [
+          { text: "Lyra, a gentle herbalist who speaks to moonflowers", tag: "compassionate" },
+          { text: "Aldric, a wandering cartographer of forgotten roads", tag: "adventurous" },
+          { text: "Senna, a fierce apprentice of the Storm Mages", tag: "brave" },
+          { text: "Wren, a scholar who reads the language of birds", tag: "insightful" }
+        ]
+      },
+      {
+        leftTitle: "The First Crossroads",
+        leftText: `The seven-tailed fox leads you through the Whisperwood, where the trees lean close to share their oldest secrets.\n\nAt the heart of the forest stands the Crossroads of Choices — four glowing paths, each a different color, each leading toward the Loom.\n\n<em>The fox says: "Each road holds a trial of the heart. Choose wisely, dear Starweaver, for the path shapes the weaver."</em>`,
+        rightTitle: "Which path calls to you?",
+        rightSub: "Choose your way",
+        choices: [
+          { text: "The Golden Road — warm and winding through sunlit meadows", tag: "adventurous" },
+          { text: "The Silver Bridge — over a chasm of forgotten memories", tag: "brave" },
+          { text: "The Starlit Tunnel — beneath the roots of the oldest tree", tag: "insightful" },
+          { text: "The River of Songs — following the melody downstream", tag: "compassionate" }
+        ]
+      },
+      {
+        leftTitle: "The Trial",
+        leftText: `Along your chosen path, you encounter an ancient guardian — a great stone owl with eyes of amber fire.\n\n<em>"To pass,"</em> it intones, <em>"you must answer: what is the one thing that stitches the world together more surely than any magic thread?"</em>\n\nYou think of everything you've known, everything you've loved, and suddenly the answer rises in you like a warm tide.`,
+        rightTitle: "What do you answer?",
+        rightSub: "Speak from your heart",
+        choices: [
+          { text: '"It is kindness — given freely, without measure or return."', tag: "compassionate" },
+          { text: '"It is courage — the willingness to go forward despite fear."', tag: "brave" },
+          { text: '"It is wonder — the hunger to discover what lies beyond."', tag: "adventurous" },
+          { text: '"It is memory — the stories that bind one soul to another."', tag: "insightful" }
+        ]
+      },
+      {
+        leftTitle: "The Loom of Stars",
+        leftText: `The guardian bows its great stone head and lets you pass. Beyond the final rise, nestled in a cathedral of ancient pines, glows the Loom of Stars — a magnificent structure of moonbeam threads and crystallized twilight.\n\nIt is broken. Half its threads hang limp, and where they touched the sky, the stars have grown dim.\n\nYou reach out and feel the magic singing inside you, waiting.`,
+        rightTitle: "How do you mend the Loom?",
+        rightSub: "Choose your final act",
+        choices: [
+          { text: "Weave it with songs of joy you carry in your memory", tag: "insightful" },
+          { text: "Pour your own starlight into the broken threads with both hands", tag: "brave" },
+          { text: "Call every creature of the forest to lend a single thread of their own", tag: "compassionate" },
+          { text: "Follow the fox's guidance and restore the oldest pattern first", tag: "adventurous" }
+        ]
+      }
+    ],
+    ending: `With the final thread woven, the Loom blazes to life. A cascade of stars floods the sky, each one brighter than before.\n\nThe seven-tailed fox curls beside you, glowing gently. <em>"You have done it,"</em> it murmurs. <em>"The world remembers itself again — because of you."</em>\n\nAcross Aethelmoor, sleeping children stir, dreaming of extraordinary things. And somewhere, deep in the oldest forest, a new story begins.`
+  },
+
+  romance: {
+    title: "Letters Never Sent",
+    chapter: "Chapter I — A Chance Beginning",
+    steps: [
+      {
+        leftTitle: "Letters Never Sent",
+        leftText: `The small coastal town of Ambershore has a library that smells of sea salt and old paper, and it is here, on a rain-blurred October Tuesday, that two umbrellas collide in the doorway.\n\nYours. And his — or hers.\n\nA book tumbles. A letter falls out, addressed in an ink you recognize as your own, dated three years ago, never sent.\n\n<em>How strange, you both think at once, that we should meet precisely here.</em>`,
+        rightTitle: "Who are you?",
+        rightSub: "Choose your character",
+        choices: [
+          { text: "Margot, a quiet baker who writes letters she never sends", tag: "compassionate" },
+          { text: "James, a travel writer who stopped believing in home", tag: "adventurous" },
+          { text: "Elara, a lighthouse keeper's granddaughter returning after years away", tag: "insightful" },
+          { text: "Oliver, a musician whose greatest song remains unfinished", tag: "brave" }
+        ]
+      },
+      {
+        leftTitle: "The First Afternoon",
+        leftText: `The storm keeps you both inside. Over cups of tea gone cold, then warm again, something shifts. The stranger laughs at something you say that was not intended to be funny, and somehow that makes it the funniest thing in the world.\n\nBy evening the rain has not ceased and neither has the conversation.\n\n<em>Outside, the sea turns that impossible colour it only becomes when it cannot decide between day and night.</em>`,
+        rightTitle: "What do you share first?",
+        rightSub: "Choose your moment",
+        choices: [
+          { text: "The story of why you came back to this small town after so long", tag: "insightful" },
+          { text: "The hobby no one else has ever found interesting — until now", tag: "adventurous" },
+          { text: "A half-finished song you hum, embarrassed, then not embarrassed", tag: "brave" },
+          { text: "The unsent letter, word by word, reading aloud for the first time", tag: "compassionate" }
+        ]
+      },
+      {
+        leftTitle: "The Complication",
+        leftText: `A week becomes a month. The world, as it does, arranges complications. There is an offer: a year abroad, a dream long deferred, arriving now at the exact wrong moment.\n\nYou sit on the harbour wall together at dusk, watching fishing boats list gently in their moorings.\n\n<em>The stranger — no longer a stranger — waits. Not asking. Giving you space to think, which somehow makes everything clearer and harder at once.</em>`,
+        rightTitle: "What do you feel in that moment?",
+        rightSub: "Your emotional truth",
+        choices: [
+          { text: "That some things are worth more than any dream that wanders alone", tag: "compassionate" },
+          { text: "That a great adventure is only great when someone sees it with you", tag: "adventurous" },
+          { text: "That courage is not going — it's being honest about wanting to stay", tag: "brave" },
+          { text: "That you've been writing letters to this moment your whole life", tag: "insightful" }
+        ]
+      },
+      {
+        leftTitle: "The Choice",
+        leftText: `You could say many things. You have rehearsed them quietly for days.\n\nBut standing here now, the harbour lanterns flickering on, the smell of salt and woodsmoke and the faint sweet thread of something baking in the distance — you find that the truest things need very few words.\n\n<em>You turn. They are already looking at you. They have been, perhaps, all along.</em>`,
+        rightTitle: "What do you say?",
+        rightSub: "Your defining words",
+        choices: [
+          { text: '"I\'ve been waiting for the right words. I think you are them."', tag: "insightful" },
+          { text: '"Wherever I go next, I\'d like you to be the reason I come back."', tag: "adventurous" },
+          { text: '"I\'m not good at this. But I\'m not afraid of you. That\'s new."', tag: "brave" },
+          { text: '"I want to write you letters I actually send. Starting now."', tag: "compassionate" }
+        ]
+      }
+    ],
+    ending: `They laugh — soft and surprised — and then do not stop smiling for a very long time.\n\nThe letter, that old unsent thing, you fold carefully and keep. Not from regret, but because now you understand it was not lost correspondence. It was a compass, pointing you here.\n\nAmbershore keeps its seasons. The library keeps its smell of sea and paper. And the two of you keep each other, imperfectly and wonderfully and without reservation.`
+  },
+
+  historical: {
+    title: "The Mapmaker's Secret",
+    chapter: "Chapter I — The Year 1889",
+    steps: [
+      {
+        leftTitle: "The Mapmaker's Secret",
+        leftText: `Vienna, 1889. The gaslit boulevards hum with the electricity of a changing world — telegraph wires stretching city to city like a new nervous system for humanity.\n\nIn a narrow atelier on the Kohlmarkt, an elderly cartographer has died, leaving behind a studio full of extraordinary maps. Maps of places that do not exist on any atlas. Maps that seem to breathe.\n\n<em>And a note: "I have left everything to the one who finds this. But first, you must earn what you find."</em>`,
+        rightTitle: "Who finds the note?",
+        rightSub: "Choose your character",
+        choices: [
+          { text: "Cecile, a young journalist from Paris chasing her first great story", tag: "adventurous" },
+          { text: "Viktor, the cartographer's estranged apprentice who fled and returned", tag: "brave" },
+          { text: "Miriam, a bookbinder who repaired the old man's journals for years", tag: "compassionate" },
+          { text: "Professor Hartmann, a geographer who knew the maps were impossible", tag: "insightful" }
+        ]
+      },
+      {
+        leftTitle: "The First Map",
+        leftText: `The atelier smells of cedar and linseed oil and something older — camphor, perhaps, or the ghost of a hundred candles.\n\nAmong the rolled charts and stacked folios, one map lies open on the great drafting table. It shows a city that does not match any you know, and yet its streets feel familiar — as though you walked them once in a dream.\n\n<em>In the margin, in a shaking hand: "To begin, choose what manner of traveller you are."</em>`,
+        rightTitle: "How do you approach the mystery?",
+        rightSub: "Choose your method",
+        choices: [
+          { text: "Begin by cataloguing everything with meticulous care before touching a thing", tag: "insightful" },
+          { text: "Follow your instincts — pick up the nearest journal and open it at random", tag: "adventurous" },
+          { text: "Seek the people who knew the old man; stories outlast documents", tag: "compassionate" },
+          { text: "Go to the address marked on the first map, whatever it takes to reach it", tag: "brave" }
+        ]
+      },
+      {
+        leftTitle: "The Discovery",
+        leftText: `Your investigation leads you, by ways both rational and serendipitous, to a small society of truth-seekers — cartographers, naturalists, poets — who have gathered for decades to document the spaces <em>between</em> the known places.\n\nNot fantasy. Not fiction. The overlooked valleys. The unnamed lakes. The villages time forgot to number. A secret geography of the tender world.\n\n<em>"He wanted someone worthy to carry it forward,"</em> the youngest member tells you. <em>"It seems that is you."</em>`,
+        rightTitle: "What moves you most?",
+        rightSub: "Your deepest wonder",
+        choices: [
+          { text: "That beauty persists in every corner the world's rush has not yet reached", tag: "compassionate" },
+          { text: "That there is still so much unmapped, still so much to discover", tag: "adventurous" },
+          { text: "That ordinary people preserved extraordinary knowledge for love alone", tag: "insightful" },
+          { text: "That you have found a place where your restlessness finally makes sense", tag: "brave" }
+        ]
+      },
+      {
+        leftTitle: "The Legacy",
+        leftText: `The old cartographer's final map shows a route you have never considered taking — one that leads not outward but toward what you have been searching for in every other direction.\n\nYou understand now. The maps were never only of <em>places</em>.\n\n<em>They were also of the person who would one day read them. A portrait in longitude and latitude, in coastlines and contours, of someone ready to carry wonder forward.</em>\n\nThe society waits for your answer.`,
+        rightTitle: "What do you choose to do?",
+        rightSub: "Your defining decision",
+        choices: [
+          { text: "Accept the role — and begin by retracing every map yourself", tag: "adventurous" },
+          { text: "Invite others in — the work is too beautiful to keep in few hands", tag: "compassionate" },
+          { text: "Publish the first account honestly; let the world decide what to do", tag: "brave" },
+          { text: "Spend one year studying every map before adding a single line of your own", tag: "insightful" }
+        ]
+      }
+    ],
+    ending: `A century later — though you cannot know this — schoolchildren in three countries will trace the maps that trace back, in unbroken line, to you.\n\nBut tonight: a warm circle of candlelight, the scratch of pen on good paper, and the quiet joy of people who have found their exact right work.\n\nThe old cartographer's note still sits in your breast pocket. You reach in and find, against all reason, that it is warm.`
+  },
+
+  modern: {
+    title: "Something Unnamed",
+    chapter: "Chapter I — An Ordinary Day",
+    steps: [
+      {
+        leftTitle: "Something Unnamed",
+        leftText: `It begins, as the best things do, in an entirely unremarkable way.\n\nYou are late. The coffee shop you've walked past every morning for three years has a new sign in the window: <em>Today's special: something you didn't know you needed.</em>\n\nYou go in. The music is something you cannot name but know immediately you have always loved. The person behind the counter looks up, and for reasons you cannot explain, you don't just order and leave.\n\nYou stay.`,
+        rightTitle: "Who are you today?",
+        rightSub: "Choose your character",
+        choices: [
+          { text: "Dani, a landscape architect who sketches strangers on her commute", tag: "adventurous" },
+          { text: "Sam, a software developer on sabbatical, searching for what's next", tag: "insightful" },
+          { text: "Priya, a documentary photographer who forgot what she was looking for", tag: "compassionate" },
+          { text: "Marcus, a chef who left his restaurant to rediscover why he cooks", tag: "brave" }
+        ]
+      },
+      {
+        leftTitle: "The Morning Stretches",
+        leftText: `The coffee shop is called <em>Chapter One</em> — which feels, you will later think, entirely too on the nose.\n\nConversation happens the way good conversations do: without agenda, sidling in through the margins of other things, until you realise twenty minutes have passed and you have missed your first appointment with zero regret.\n\n<em>"You're not what I expected,"</em> you almost say — but don't, not yet. Some sentences need a little more time.`,
+        rightTitle: "What draws you deeper in?",
+        rightSub: "Choose your connection",
+        choices: [
+          { text: "They have the same obscure book on the shelf behind the counter that you lost", tag: "insightful" },
+          { text: "They mention a place you once visited alone and have never stopped thinking about", tag: "adventurous" },
+          { text: "They ask you a question no one has thought to ask in years", tag: "compassionate" },
+          { text: "They disagree with you thoughtfully about something you thought was obvious", tag: "brave" }
+        ]
+      },
+      {
+        leftTitle: "The Weeks That Follow",
+        leftText: `You come back the next day. And the one after.\n\nIt would be easy, at this point, to let the routine become comfortable, to let comfortable become taken-for-granted. You have done this before: let something good go ordinary before you'd finished appreciating it.\n\nBut something is different this time. You are different — or perhaps you are simply paying attention.\n\n<em>Attention, you are learning, is another word for love.</em>`,
+        rightTitle: "What changes in you?",
+        rightSub: "Your inner shift",
+        choices: [
+          { text: "You begin finishing things you'd abandoned — sketches, projects, half-read books", tag: "adventurous" },
+          { text: "You start saying what you mean, even when it's easier not to", tag: "brave" },
+          { text: "You slow down. You notice the quality of light. You call your mum.", tag: "compassionate" },
+          { text: "You understand, finally, what you were actually searching for this whole time", tag: "insightful" }
+        ]
+      },
+      {
+        leftTitle: "The Evening You Remember",
+        leftText: `After closing, when the chairs are upturned on the tables and the city outside has softened to its nighttime self, you find yourselves talking about the future — yours, theirs, the shape a life might take when it stops apologising for what it wants.\n\n<em>The music has stopped. Neither of you noticed when.</em>\n\nThere is a moment — you will know it when it comes — when a story becomes the story. When ordinary becomes the very best possible word.`,
+        rightTitle: "What do you decide?",
+        rightSub: "Your choice",
+        choices: [
+          { text: "Propose the thing you have been holding back: a trip, a plan, a beginning", tag: "adventurous" },
+          { text: "Say the sentence you've been carrying in your chest for weeks", tag: "brave" },
+          { text: "Stay until the very last moment, unhurried, exactly here", tag: "compassionate" },
+          { text: "Tell them: you had the answer all along, you just needed the right question", tag: "insightful" }
+        ]
+      }
+    ],
+    ending: `Later — much later — you will describe this as the year things finally made sense.\n\nNot that they became easier. Not that the world straightened out into something simple. But that you moved through it knowing what mattered, and with someone who understood why.\n\nChapter One is still there on the corner. The sign still says: <em>today's special: something you didn't know you needed.</em>\n\nEvery morning, you smile.`
+  }
+};
+
+// Reader types by tag tally
+const READER_TYPES = {
+  adventurous: { title: "You are an Adventurous Reader", icon: "🧭", desc: "Your spirit runs toward the horizon. You see every doorway as an invitation and every unknown road as a gift waiting to be unwrapped." },
+  brave: { title: "You are a Brave Reader", icon: "🗡️", desc: "You face what others turn away from, and your willingness to walk through discomfort is the very thing that makes you extraordinary." },
+  insightful: { title: "You are an Insightful Reader", icon: "🪬", desc: "You see beneath the surface of things — the meaning inside the moment, the story inside the silence — with a clarity that is entirely your own." },
+  compassionate: { title: "You are a Compassionate Reader", icon: "🌿", desc: "You feel the world more deeply than most, and your warmth is not weakness — it is the thread from which the best stories are made." }
+};
+
+// ── STATE ────────────────────────────────────────────────────────
+let state = {
+  screen: 'opening',
+  genre: null,
+  step: 0,
+  tags: [],
+  pageNum: 1
+};
+
+// ── RENDER ───────────────────────────────────────────────────────
+function render(animate=true) {
+  const leftEl = document.getElementById('leftContent');
+  const rightEl = document.getElementById('rightContent');
+  const lNum = document.getElementById('leftPageNum');
+  const rNum = document.getElementById('rightPageNum');
+
+  if (animate) {
+    leftEl.style.opacity = '0';
+    rightEl.style.opacity = '0';
+    setTimeout(() => doRender(leftEl, rightEl, lNum, rNum), 80);
+    setTimeout(() => {
+      leftEl.classList.remove('fade-in');
+      rightEl.classList.remove('fade-in');
+      void leftEl.offsetWidth;
+      leftEl.classList.add('fade-in');
+      rightEl.classList.add('fade-in');
+    }, 100);
+  } else {
+    doRender(leftEl, rightEl, lNum, rNum);
+  }
+}
+
+function doRender(leftEl, rightEl, lNum, rNum) {
+  leftEl.style.opacity = '';
+  rightEl.style.opacity = '';
+
+  if (state.screen === 'opening') {
+    renderOpening(leftEl, rightEl, lNum, rNum);
+  } else if (state.screen === 'genre') {
+    renderGenre(leftEl, rightEl, lNum, rNum);
+  } else if (state.screen === 'story') {
+    renderStory(leftEl, rightEl, lNum, rNum);
+  } else if (state.screen === 'ending') {
+    renderEnding(leftEl, rightEl, lNum, rNum);
+  } else if (state.screen === 'result') {
+    renderResult(leftEl, rightEl, lNum, rNum);
+  }
+}
+
+function cornerSVG() {
+  return `<svg viewBox="0 0 24 24" fill="none"><path d="M2 2 Q8 2 8 8 Q8 14 14 14 Q20 14 20 20" stroke="#b8952a" stroke-width="1.2" fill="none"/><circle cx="2" cy="2" r="1.5" fill="#b8952a"/><circle cx="20" cy="20" r="1.5" fill="#b8952a"/></svg>`;
+}
+
+// ── OPENING ──────────────────────────────────────────────────────
+function renderOpening(leftEl, rightEl, lNum, rNum) {
+  lNum.textContent = '';
+  rNum.textContent = '';
+
+  leftEl.innerHTML = `
+    <div class="opening-screen">
+      <div class="book-icon-anim">
+        <svg width="80" height="60" viewBox="0 0 80 60">
+          <defs>
+            <radialGradient id="glow" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stop-color="#d4a84b" stop-opacity="0.4"/>
+              <stop offset="100%" stop-color="#d4a84b" stop-opacity="0"/>
+            </radialGradient>
+          </defs>
+          <ellipse cx="40" cy="30" rx="38" ry="28" fill="url(#glow)"/>
+          <rect x="10" y="8" width="28" height="44" rx="3" fill="#6b3a10" stroke="#b8952a" stroke-width="1"/>
+          <rect x="38" y="8" width="28" height="44" rx="3" fill="#7a4518" stroke="#b8952a" stroke-width="1"/>
+          <line x1="10" y1="30" x2="38" y2="30" stroke="#b8952a" stroke-width="0.5" stroke-dasharray="2,2"/>
+          <line x1="42" y1="30" x2="66" y2="30" stroke="#b8952a" stroke-width="0.5" stroke-dasharray="2,2"/>
+          <line x1="38" y1="8" x2="38" y2="52" stroke="#b8952a" stroke-width="1.5"/>
+          <circle cx="40" cy="30" r="2" fill="#d4a84b"/>
+          <path d="M15 16 Q24 14 33 16 M15 22 Q24 20 33 22 M15 28 Q24 26 33 28 M15 34 Q24 32 33 34 M15 40 Q24 38 33 40" stroke="#b8952a" stroke-width="0.6" fill="none" opacity="0.5"/>
+          <path d="M43 16 Q52 14 61 16 M43 22 Q52 20 61 22 M43 28 Q52 26 61 28 M43 34 Q52 32 61 34 M43 40 Q52 38 61 40" stroke="#b8952a" stroke-width="0.6" fill="none" opacity="0.5"/>
+        </svg>
+      </div>
+      <div class="main-title">Once Upon<span>A Story of Your Making</span></div>
+      <div class="divider-ornament">✦ ✦ ✦</div>
+      <p class="opening-text">Every story begins with a choice. Yours awaits between these pages.</p>
+    </div>`;
+
+  rightEl.innerHTML = `
+    <div class="opening-screen">
+      <div class="scene-divider">— ✦ —</div>
+      <p class="opening-text" style="text-align:center; font-size:0.96em; color:#4a2e0a; font-style:normal; font-family:'Cinzel',serif; letter-spacing:0.05em; line-height:1.9;">
+        An interactive storybook for the reader who wishes to live inside the tale, not merely observe it.
+      </p>
+      <div class="divider-ornament" style="font-size:1em; margin:8px 0;">· · ·</div>
+      <p class="opening-text" style="text-align:center; color:#5a3a18;">
+        Choose your genre. Shape your character. Discover who you truly are.
+      </p>
+      <button class="begin-btn" onclick="beginStory()">Open the Book</button>
+      <p class="opening-text" style="font-size:0.78em; color:#8a6030; margin-top:8px;">✦ Four paths · Four characters · One happy ending ✦</p>
+    </div>`;
+}
+
+// ── GENRE SELECT ─────────────────────────────────────────────────
+function renderGenre(leftEl, rightEl, lNum, rNum) {
+  lNum.textContent = '— i —';
+  rNum.textContent = '— ii —';
+
+  leftEl.innerHTML = `
+    <div class="content-area fade-in">
+      <div class="chapter-label">The Collection</div>
+      <div class="story-heading">Choose Your Story</div>
+      <div class="scene-divider">— ✦ —</div>
+      <p class="story-text" style="margin-top:14px;">
+        Four worlds lie open before you, each with its own light and shadow, its own particular magic.
+        <br><br>
+        <em>Fantasy</em> — where stars can be woven and foxes carry the weight of ancient duties.
+        <br><br>
+        <em>Romance</em> — where two people find each other in the margins of an otherwise ordinary life.
+        <br><br>
+        <em>Historical</em> — where the past holds secrets worth the risk of uncovering.
+        <br><br>
+        <em>Modern</em> — where the most remarkable thing is the courage to stay present.
+        <br><br>
+        Turn the page, and choose.
+      </p>
+    </div>`;
+
+  rightEl.innerHTML = `
+    <div class="content-area fade-in" style="display:flex;flex-direction:column;">
+      <div class="choices-heading">Which world calls to you?</div>
+      <div class="genre-grid">
+        <button class="genre-btn" onclick="selectGenre('fantasy')">
+          <span class="genre-icon">✨</span>
+          Fantasy
+          <span class="genre-sub">The Starweaver's Path</span>
+        </button>
+        <button class="genre-btn" onclick="selectGenre('romance')">
+          <span class="genre-icon">💌</span>
+          Romance
+          <span class="genre-sub">Letters Never Sent</span>
+        </button>
+        <button class="genre-btn" onclick="selectGenre('historical')">
+          <span class="genre-icon">🗺️</span>
+          Historical
+          <span class="genre-sub">The Mapmaker's Secret</span>
+        </button>
+        <button class="genre-btn" onclick="selectGenre('modern')">
+          <span class="genre-icon">☕</span>
+          Modern
+          <span class="genre-sub">Something Unnamed</span>
+        </button>
+      </div>
+    </div>`;
+}
+
+// ── STORY STEP ───────────────────────────────────────────────────
+function renderStory(leftEl, rightEl, lNum, rNum) {
+  const story = STORIES[state.genre];
+  const step = story.steps[state.step];
+  const pageL = state.pageNum;
+  const pageR = state.pageNum + 1;
+  lNum.textContent = `— ${pageL} —`;
+  rNum.textContent = `— ${pageR} —`;
+
+  const totalSteps = story.steps.length;
+  const progressDots = Array.from({length: totalSteps}, (_, i) => {
+    let cls = 'dot';
+    if (i < state.step) cls += ' done';
+    else if (i === state.step) cls += ' active';
+    return `<div class="${cls}"></div>`;
+  }).join('');
+
+  leftEl.innerHTML = `
+    <div class="content-area">
+      <div class="chapter-label">${story.chapter.replace('Chapter I', `Chapter ${state.step+1}`)}</div>
+      <div class="story-heading">${step.leftTitle}</div>
+      <div class="scene-divider">— ✦ —</div>
+      <p class="story-text" style="margin-top:12px;">${step.leftText.replace(/\n\n/g,'<br><br>').replace(/\n/g,'<br>')}</p>
+      <div class="progress-dots" style="margin-top:auto;">${progressDots}</div>
+    </div>`;
+
+  rightEl.innerHTML = `
+    <div class="content-area" style="display:flex;flex-direction:column;">
+      <div class="choices-heading">${step.rightTitle}</div>
+      <div style="font-family:'IM Fell English',serif;font-style:italic;color:#8a6030;font-size:0.78em;text-align:center;margin-bottom:12px;">${step.rightSub}</div>
+      <div class="choices-grid">
+        ${step.choices.map((c,i) => `<button class="choice-btn" onclick="makeChoice(${i})">${c.text}</button>`).join('')}
+      </div>
+    </div>`;
+}
+
+// ── ENDING ───────────────────────────────────────────────────────
+function renderEnding(leftEl, rightEl, lNum, rNum) {
+  const story = STORIES[state.genre];
+  const pageL = state.pageNum;
+  lNum.textContent = `— ${pageL} —`;
+  rNum.textContent = `— ${pageL+1} —`;
+
+  leftEl.innerHTML = `
+    <div class="content-area">
+      <div class="chapter-label">The Ending</div>
+      <div class="story-heading">Happily Ever After</div>
+      <div class="scene-divider">— ✦ —</div>
+      <p class="story-text" style="margin-top:12px;">${story.ending.replace(/\n\n/g,'<br><br>').replace(/\n/g,'<br>')}</p>
+    </div>`;
+
+  rightEl.innerHTML = `
+    <div class="content-area" style="display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:20px;">
+      <div class="divider-ornament" style="font-size:1.4em;">✦</div>
+      <p class="story-heading" style="font-size:1.2em;color:#7a5020;">The End</p>
+      <div class="scene-divider" style="font-size:1.2em;letter-spacing:0.6em;">· · ·</div>
+      <p class="opening-text" style="text-align:center;font-size:0.9em;color:#5a3a18;">
+        <em>Now let us see what your choices reveal about you, dear reader...</em>
+      </p>
+      <button class="begin-btn" onclick="showResult()">Discover Your Reader Type</button>
+    </div>`;
+}
+
+// ── RESULT ───────────────────────────────────────────────────────
+function renderResult(leftEl, rightEl, lNum, rNum) {
+  const tagCount = {};
+  state.tags.forEach(t => tagCount[t] = (tagCount[t]||0)+1);
+  const topTag = Object.entries(tagCount).sort((a,b)=>b[1]-a[1])[0][0];
+  const rt = READER_TYPES[topTag];
+
+  lNum.textContent = '— fin —';
+  rNum.textContent = '';
+
+  leftEl.innerHTML = `
+    <div class="result-page fade-in">
+      <div>
+        <div class="chapter-label">Your Story Complete</div>
+        <div class="scene-divider" style="margin:8px 0;">✦ ✦ ✦</div>
+      </div>
+      <div class="result-badge">${rt.icon}</div>
+      <div>
+        <p class="reader-type">${rt.title}</p>
+        <div class="scene-divider" style="margin:10px 0;">— ✦ —</div>
+        <p class="reader-desc">${rt.desc}</p>
+      </div>
+      <div>
+        <div class="star-row">✦ ✦ ✦ ✦ ✦</div>
+        <p class="hea-text" style="margin-top:12px;">Happily Ever After</p>
+      </div>
+    </div>`;
+
+  rightEl.innerHTML = `
+    <div class="content-area" style="display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;height:100%;gap:22px;">
+      <div class="divider-ornament" style="font-size:1.8em;">📖</div>
+      <p class="story-heading" style="font-size:0.95em;">Your Story Has Been Written</p>
+      <p class="opening-text" style="text-align:center;max-width:260px;color:#5a3a18;">
+        <em>Every choice you made was a thread in the tapestry. No other reader in all the world has made exactly the same story as you.</em>
+      </p>
+      <div class="scene-divider">— ✦ —</div>
+      <button class="begin-btn" onclick="closeBook()" style="font-size:0.75em;padding:10px 28px;">Close the Book</button>
+      <button class="begin-btn" onclick="restartStory()" style="font-size:0.72em;padding:8px 24px;background:linear-gradient(135deg,#4a3010,#2a1800,#4a3010);margin-top:-8px;">Begin Again</button>
+    </div>`;
+}
+
+// ── ACTIONS ──────────────────────────────────────────────────────
+function beginStory() {
+  triggerPageTurn(() => {
+    state.screen = 'genre';
+    state.pageNum = 1;
+    render(true);
+  });
+}
+
+function selectGenre(genre) {
+  triggerPageTurn(() => {
+    state.genre = genre;
+    state.screen = 'story';
+    state.step = 0;
+    state.tags = [];
+    state.pageNum = 3;
+    render(true);
+  });
+}
+
+function makeChoice(idx) {
+  const story = STORIES[state.genre];
+  const step = story.steps[state.step];
+  const chosen = step.choices[idx];
+  state.tags.push(chosen.tag);
+
+  // Animate selected button
+  const btns = document.querySelectorAll('.choice-btn');
+  btns.forEach((b,i) => {
+    if(i===idx) b.classList.add('selected');
+    else b.style.opacity='0.4';
+  });
+
+  setTimeout(() => {
+    triggerPageTurn(() => {
+      state.step++;
+      state.pageNum += 2;
+      if (state.step >= story.steps.length) {
+        state.screen = 'ending';
+      }
+      render(true);
+    });
+  }, 400);
+}
+
+function showResult() {
+  triggerPageTurn(() => {
+    state.screen = 'result';
+    state.pageNum += 2;
+    render(true);
+  });
+}
+
+function closeBook() {
+  const book = document.getElementById('book');
+  const pL = document.getElementById('pageLeft');
+  const pR = document.getElementById('pageRight');
+  pL.classList.add('book-closing-left');
+  pR.classList.add('book-closing-right');
+  setTimeout(() => {
+    book.classList.add('book-closed-final');
+    document.getElementById('leftContent').innerHTML = '';
+    document.getElementById('rightContent').innerHTML = '';
+    document.getElementById('leftPageNum').textContent = '';
+    document.getElementById('rightPageNum').textContent = '';
+  }, 900);
+  setTimeout(() => {
+    // Show a final closed book message
+    document.getElementById('leftContent').innerHTML = `
+      <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:14px;text-align:center;opacity:0;animation:fadeContent 1s 0.3s forwards;">
+        <p class="story-heading" style="color:#7a5020;font-size:0.9em;">Until next time...</p>
+        <p class="opening-text" style="font-size:0.85em;color:#8a6030;font-style:italic;">May all your stories end well.</p>
+        <div class="divider-ornament">✦</div>
+        <button class="begin-btn" style="font-size:0.72em;" onclick="restartStory()">Open Again</button>
+      </div>`;
+    pL.classList.remove('book-closing-left');
+    pR.classList.remove('book-closing-right');
+    book.classList.remove('book-closed-final');
+  }, 2200);
+}
+
+function restartStory() {
+  triggerPageTurn(() => {
+    state = { screen: 'opening', genre: null, step: 0, tags: [], pageNum: 1 };
+    render(true);
+  });
+}
+
+// ── PAGE TURN ────────────────────────────────────────────────────
+function triggerPageTurn(callback) {
+  const left = document.getElementById('pageLeft');
+  const right = document.getElementById('pageRight');
+
+  // Create overlay flash
+  const overlay = document.createElement('div');
+  overlay.style.cssText = `
+    position:absolute; inset:0; background:linear-gradient(90deg,rgba(240,225,190,0) 0%,rgba(240,225,190,0.7) 50%,rgba(240,225,190,0) 100%);
+    z-index:50; pointer-events:none;
+    animation:pageTurn 0.55s cubic-bezier(0.4,0,0.2,1) forwards;
+  `;
+  document.getElementById('bookPages').style.position = 'relative';
+  document.getElementById('bookPages').appendChild(overlay);
+
+  // Fade out content
+  document.getElementById('leftContent').style.transition = 'opacity 0.2s';
+  document.getElementById('rightContent').style.transition = 'opacity 0.2s';
+  document.getElementById('leftContent').style.opacity = '0';
+  document.getElementById('rightContent').style.opacity = '0';
+
+  setTimeout(() => {
+    overlay.remove();
+    callback();
+  }, 480);
+}
+
+// ── INIT ─────────────────────────────────────────────────────────
+render(false);
+</script>
+</body>
+</html>

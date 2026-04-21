@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+        <meta name="description" content="Emma McKay's reading page with favorite books, a Tableau reading tracker, and an interactive story link." />
+        <meta name="author" content="Emma McKay" />
+        <title>Emma McKay | My Library</title>
+        <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
+        <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
+        <link href="https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css" />
+        <link href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css" />
+        <link href="css/styles.css" rel="stylesheet" />
+        <link rel="stylesheet" href="css/stylesheet.css" />
+        <style>
+            #mainNav {
+                background: #4b2f22;
+                box-shadow: 0 10px 24px rgba(53, 39, 29, 0.18);
+            }
+
+            #mainNav .navbar-brand,
+            #mainNav .nav-link,
+            #mainNav .navbar-toggler {
+                color: #f5ebdf;
+            }
+
+            #mainNav .nav-link:hover,
+            #mainNav .nav-link:focus,
+            #mainNav .nav-link.active,
+            #mainNav .navbar-brand:hover,
+            #mainNav .navbar-brand:focus,
+            #mainNav .navbar-toggler:hover,
+            #mainNav .navbar-toggler:focus {
+                color: #d4a689;
+            }
+
+            .library-layout {
+                padding-top: 1rem;
+            }
+
+            .tableau-card {
+                display: grid;
+                gap: 1rem;
+            }
+
+            .tableau-card p {
+                margin: 0;
+            }
+
+            .video-card {
+                display: grid;
+                gap: 1rem;
+            }
+
+            .video-card-header {
+                display: grid;
+                gap: 0.35rem;
+            }
+
+            .video-card-header h2 {
+                margin: 0;
+                color: var(--ink);
+            }
+
+            .video-card p {
+                margin: 0;
+                color: var(--muted-ink);
+            }
+
+            .video-frame-wrap {
+                overflow: hidden;
+                border: 1px solid rgba(83, 54, 34, 0.14);
+                border-radius: 20px;
+                background: #000;
+                box-shadow: 0 18px 40px rgba(53, 39, 29, 0.12);
+            }
+
+            .video-frame {
+                display: block;
+                width: 100%;
+                min-height: 315px;
+                aspect-ratio: 16 / 9;
+                border: 0;
+            }
+
+            .tableauPlaceholder {
+                width: 100%;
+                overflow: hidden;
+                border: 1px solid rgba(83, 54, 34, 0.14);
+                border-radius: 20px;
+                background: rgba(255, 251, 243, 0.88);
+                box-shadow: 0 18px 40px rgba(53, 39, 29, 0.12);
+            }
+
+            .tableauPlaceholder object,
+            .tableauPlaceholder iframe {
+                width: 100%;
+            }
+
+            .story-link-card {
+                text-align: center;
+            }
+
+            .story-link-card a {
+                color: var(--wood-dark);
+                font-size: 1.2rem;
+                font-style: italic;
+                text-decoration: none;
+                transition: color 0.2s ease;
+            }
+
+            .story-link-card a:hover,
+            .story-link-card a:focus {
+                color: var(--gold);
+            }
+
+            .eyebrow-card {
+                margin-top: 2.5rem;
+                padding: 1.1rem 2rem;
+            }
+
+            .eyebrow-card .eyebrow {
+                margin: 0;
+            }
+
+            @media (max-width: 980px) {
+                .library-layout {
+                    width: min(760px, calc(100% - 15.5rem));
+                }
+
+                .bookshelf {
+                    position: fixed;
+                    top: 5.8rem;
+                    bottom: 1.5rem;
+                    width: clamp(105px, 12vw, 150px);
+                    flex-direction: column;
+                    overflow: hidden;
+                    padding: 1rem 0.55rem;
+                    margin-bottom: 0;
+                }
+
+                .shelf {
+                    min-width: 0;
+                    min-height: 0;
+                    padding: 1rem 0.35rem 0.9rem;
+                }
+            }
+
+        </style>
+    </head>
+    <body id="top">
+        <nav class="navbar navbar-expand-lg navbar-light" id="mainNav">
+            <div class="container px-4 px-lg-5">
+                <a class="navbar-brand" href="index.html">My Library</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+                    Menu
+                    <i class="fas fa-bars"></i>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarResponsive">
+                    <ul class="navbar-nav ms-auto py-4 py-lg-0">
+                        <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="index.html">Home</a></li>
+                        <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="about.html">Resume</a></li>
+                        <li class="nav-item"><a class="nav-link active px-lg-3 py-3 py-lg-4" href="scratch.html" aria-current="page">Scratch</a></li>
+                        <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="contact.html">Contact</a></li>
+                        <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="interactive_storybook.html">Interactive Story Book</a></li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        <div class="library-layout">
+            <aside class="bookshelf bookshelf-left" aria-label="Featured books on the left">
+                <div class="shelf">
+                    <a class="book book-1" data-book-id="pride-and-prejudice" href="https://www.barnesandnoble.com/w/pride-and-prejudice-jane-austen/1002057084?ean=9781454964810" target="_blank" rel="noopener noreferrer" aria-label="Open Pride and Prejudice">Pride &amp; Prejudice</a>
+                    <a class="book book-2" data-book-id="little-women" href="https://www.barnesandnoble.com/w/little-women-louisa-may-alcott/1116668150?ean=9780140390698" target="_blank" rel="noopener noreferrer" aria-label="Open Little Women">Little Women</a>
+                    <a class="book book-3" data-book-id="the-host" href="https://www.barnesandnoble.com/w/the-host-with-bonus-chapter-stephenie-meyer/1106917775?ean=9780316068055" target="_blank" rel="noopener noreferrer" aria-label="Open The Host">The Host</a>
+                    <a class="book book-4" data-book-id="jane-eyre" href="https://www.barnesandnoble.com/w/jane-eyre-charlotte-bronte/1003646772?ean=9780141441146" target="_blank" rel="noopener noreferrer" aria-label="Open Jane Eyre">Jane Eyre</a>
+                </div>
+                <div class="shelf">
+                    <a class="book book-5" href="https://www.barnesandnoble.com/w/harry-potter-and-the-sorcerers-stone-j-k-rowling/1133614639?ean=9781338299144" target="_blank" rel="noopener noreferrer" aria-label="Open Harry Potter">Harry Potter</a>
+                    <a class="book book-6" href="https://www.barnesandnoble.com/w/sunrise-on-the-reaping-suzanne-collins/1145703863?ean=9781546171461" target="_blank" rel="noopener noreferrer" aria-label="Open Sunrise on the Reaping">Sunrise Reaping</a>
+                    <a class="book book-7" href="https://www.barnesandnoble.com/w/the-hobbit-j-r-r-tolkien/1100068700?ean=9780345339683" target="_blank" rel="noopener noreferrer" aria-label="Open The Hobbit">The Hobbit</a>
+                    <a class="book book-8" href="https://www.barnesandnoble.com/w/the-count-of-monte-cristo-alexandre-dumas/1100068698?ean=9780140449266" target="_blank" rel="noopener noreferrer" aria-label="Open The Count of Monte Cristo">Monte Cristo</a>
+                </div>
+                <div class="shelf">
+                    <a class="book book-9" href="https://www.barnesandnoble.com/w/emma-jane-austen/1116612326?ean=9780141439587" target="_blank" rel="noopener noreferrer" aria-label="Open Emma">Emma</a>
+                    <a class="book book-10" data-book-id="edenbrooke" href="https://www.barnesandnoble.com/w/edenbrooke-and-heir-to-edenbrooke-collectors-edition-julianne-donaldson/1125877311?ean=9781629723310" target="_blank" rel="noopener noreferrer" aria-label="Open Edenbrooke">Edenbrooke</a>
+                    <a class="book book-11" href="https://www.barnesandnoble.com/w/once-upon-a-broken-heart-stephanie-garber/1138454250?ean=9781250268402" target="_blank" rel="noopener noreferrer" aria-label="Open Once Upon a Broken Heart">Broken Heart</a>
+                    <a class="book book-12" data-book-id="anne-of-green-gables" href="https://www.barnesandnoble.com/w/anne-of-green-gables-l-m-montgomery/1116649144?ean=9781454945628" target="_blank" rel="noopener noreferrer" aria-label="Open Anne of Green Gables">Anne Green Gables</a>
+                </div>
+            </aside>
+
+            <main class="content">
+                <section class="writing-card eyebrow-card">
+                    <p class="eyebrow">Once upon a time...</p>
+                </section>
+
+                <section class="hero">
+                    <h1>My Library</h1>
+                    <p class="intro library-quote">
+                      "The person, be it gentleman or lady, who has not pleasure in a good novel, must be intolerably stupid" - Jane Austen.
+                    </p>
+                    <p class="intro">
+                      Books have always been more than just pages to me, they’re a doorway into new perspectives and endless imagination. Through reading, I’m able to step outside my own world and explore unfamiliar places, experiences, and stories that shape how I see life. It’s both an escape and an indulgence, offering quiet moments of reflection as well as excitement and discovery. More than anything, I believe books are one of the greatest connectors of people, bridging cultures, ideas, and emotions in a way nothing else quite can.
+                    </p>
+                </section>
+
+                <section class="writing-card tableau-card">
+                    <h2>Books from Tableau</h2>
+                    <p>An interactive Tableau view of the books from 2023 is embedded here on the page.</p>
+                    <div class="tableauPlaceholder" id="viz1776405898766" style="position: relative">
+                        <noscript>
+                            <a href="https://public.tableau.com/views/BooksIReadin2023___/BooksReadin2023?:showVizHome=no" target="_blank" rel="noopener noreferrer">
+                                <img
+                                    alt="Books Read in 2023"
+                                    src="https://public.tableau.com/static/images/Bo/BooksIReadin2023___/BooksReadin2023/1_rss.png"
+                                    style="border: none"
+                                />
+                            </a>
+                        </noscript>
+                        <object class="tableauViz" style="display: none">
+                            <param name="host_url" value="https%3A%2F%2Fpublic.tableau.com%2F" />
+                            <param name="embed_code_version" value="3" />
+                            <param name="site_root" value="" />
+                            <param name="name" value="BooksIReadin2023___/BooksReadin2023" />
+                            <param name="tabs" value="no" />
+                            <param name="toolbar" value="yes" />
+                            <param name="static_image" value="https://public.tableau.com/static/images/Bo/BooksIReadin2023___/BooksReadin2023/1.png" />
+                            <param name="animate_transition" value="yes" />
+                            <param name="display_static_image" value="yes" />
+                            <param name="display_spinner" value="yes" />
+                            <param name="display_overlay" value="yes" />
+                            <param name="display_count" value="yes" />
+                            <param name="language" value="en-US" />
+                        </object>
+                    </div>
+                </section>
+
+                <section class="writing-card favorite-books-card">
+                    <h3>My Top 10 Favorite Books</h3>
+                    <p class="favorite-books-intro">A small shelf of the stories I return to most.</p>
+                    <ol class="favorite-books-list">
+                        <li class="favorite-book-item" data-book-target="jane-eyre" tabindex="0" role="button" aria-pressed="false">Jane Eyre</li>
+                        <li class="favorite-book-item" data-book-target="little-women" tabindex="0" role="button" aria-pressed="false">Little Women</li>
+                        <li class="favorite-book-item" data-book-target="pride-and-prejudice" tabindex="0" role="button" aria-pressed="false">Pride and Prejudice</li>
+                        <li class="favorite-book-item" data-book-target="edenbrooke" tabindex="0" role="button" aria-pressed="false">Edenbrooke</li>
+                        <li class="favorite-book-item" data-book-target="lakeshire-park" tabindex="0" role="button" aria-pressed="false">Lakeshire Park</li>
+                        <li class="favorite-book-item" data-book-target="the-host" tabindex="0" role="button" aria-pressed="false">The Host</li>
+                        <li class="favorite-book-item" data-book-target="anne-of-green-gables" tabindex="0" role="button" aria-pressed="false">Anne of Green Gables</li>
+                        <li class="favorite-book-item" data-book-target="picking-daisies-on-sundays" tabindex="0" role="button" aria-pressed="false">Picking Daisies on Sundays</li>
+                        <li class="favorite-book-item" data-book-target="the-guernsey-literary-and-potato-peel-pie-society" tabindex="0" role="button" aria-pressed="false">The Guernsey Literary and Potato Peel Pie Society</li>
+                        <li class="favorite-book-item" data-book-target="cinder" tabindex="0" role="button" aria-pressed="false">Cinder</li>
+                    </ol>
+                </section>
+
+                <section class="writing-card video-card">
+                    <div class="video-card-header">
+                        <h2>Why Read?</h2>
+                        <p>Watch this video to find out!</p>
+                    </div>
+                    <div class="video-frame-wrap">
+                        <iframe
+                            class="video-frame"
+                            width="560"
+                            height="315"
+                            src="https://www.youtube.com/embed/ctaPAm14L10?si=OzH6_Ow2xwr1t5O9"
+                            title="YouTube video player"
+                            frameborder="0"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                            referrerpolicy="strict-origin-when-cross-origin"
+                            allowfullscreen="allowfullscreen"
+                        ></iframe>
+                    </div>
+                </section>
+
+                <section class="writing-card library-note-card">
+                    <p>
+                      This bookshelf is a curated collection of stories that have inspired, challenged, and stayed with me. Each book is linked so you can explore them too, whether you’re looking for a new perspective, a spark of imagination, or simply your next great read. Think of it as a small window into the worlds I’ve loved, and an open invitation to discover something new for yourself.
+                    </p>
+                </section>
+
+                <section class="writing-card story-link-card">
+                    <a href="interactive_storybook.html">Start your story...</a>
+                </section>
+            </main>
+
+            <aside class="bookshelf bookshelf-right" aria-label="Featured books on the right">
+                <div class="shelf">
+                    <a class="book book-13" data-book-id="cinder" href="https://www.barnesandnoble.com/w/cinder-marissa-meyer/1100649238?ean=9781250768889" target="_blank" rel="noopener noreferrer" aria-label="Open Cinder">Cinder</a>
+                    <a class="book book-14" href="https://www.barnesandnoble.com/w/the-lightning-thief-rick-riordan/1100190320?ean=9781368051477" target="_blank" rel="noopener noreferrer" aria-label="Open Percy Jackson">Percy Jackson</a>
+                    <a class="book book-15" href="https://www.barnesandnoble.com/w/twilight-stephenie-meyer/1147007259?ean=9780316592987" target="_blank" rel="noopener noreferrer" aria-label="Open Twilight">Twilight</a>
+                    <a class="book book-16" href="https://www.barnesandnoble.com/w/love-gelato-jenna-evans-welch/1122088370?ean=9781481432559" target="_blank" rel="noopener noreferrer" aria-label="Open Love and Gelato">Love &amp; Gelato</a>
+                </div>
+                <div class="shelf">
+                    <a class="book book-17" data-book-id="lakeshire-park" href="https://www.barnesandnoble.com/w/lakeshire-park-megan-walker/1132628786?ean=9781629727349" target="_blank" rel="noopener noreferrer" aria-label="Open Lakeshire Park">Lakeshire Park</a>
+                    <a class="book book-18" href="https://www.barnesandnoble.com/w/the-nightingale-kristin-hannah/1119169484?ean=9781250080400" target="_blank" rel="noopener noreferrer" aria-label="Open The Nightingale">Nightingale</a>
+                    <a class="book book-19" href="https://www.barnesandnoble.com/w/elantris-brandon-sanderson/1100356144?ean=9780765350374" target="_blank" rel="noopener noreferrer" aria-label="Open Elantris">Elantris</a>
+                    <a class="book book-20" data-book-id="picking-daisies-on-sundays" href="https://www.barnesandnoble.com/w/picking-daisies-on-sundays-liana-cincotti/1145469024?ean=9781538779262" target="_blank" rel="noopener noreferrer" aria-label="Open Picking Daisies on Sundays">Picking Daisies</a>
+                </div>
+                <div class="shelf">
+                    <a class="book book-21" href="https://www.barnesandnoble.com/w/the-hunger-games-suzanne-collins/1100171585?ean=9780439023528" target="_blank" rel="noopener noreferrer" aria-label="Open Hunger Games">Hunger Games</a>
+                    <a class="book book-22" href="https://www.barnesandnoble.com/w/to-kill-a-mockingbird-harper-lee/1100151011?ean=9780060935467" target="_blank" rel="noopener noreferrer" aria-label="Open To Kill a Mockingbird">Mockingbird</a>
+                    <a class="book book-23" data-book-id="the-guernsey-literary-and-potato-peel-pie-society" href="https://www.barnesandnoble.com/w/the-guernsey-literary-and-potato-peel-pie-society-mary-ann-shaffer/1100259926?ean=9780440337973" target="_blank" rel="noopener noreferrer" aria-label="Open The Guernsey Literary and Potato Peel Pie Society">Guernsey Literary</a>
+                    <a class="book book-24" href="https://www.barnesandnoble.com/w/the-selection-kiera-cass/1106580335?ean=9780062059949" target="_blank" rel="noopener noreferrer" aria-label="Open The Selection">The Selection</a>
+                </div>
+            </aside>
+        </div>
+        <div class="text-center pb-3">
+            <a href="#top">Jump to top</a>
+        </div>
+        <div class="small text-center text-muted fst-italic">Copyright &copy; Emma McKay 2026</div>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+        <script src="js/scripts.js"></script>
+        <script type="text/javascript">
+            var divElement = document.getElementById("viz1776405898766");
+            var vizElement = divElement.getElementsByTagName("object")[0];
+            vizElement.style.width = "100%";
+            vizElement.style.height = "747px";
+            var scriptElement = document.createElement("script");
+            scriptElement.src = "https://public.tableau.com/javascripts/api/viz_v1.js";
+            vizElement.parentNode.insertBefore(scriptElement, vizElement);
+        </script>
+    </body>
+</html>
