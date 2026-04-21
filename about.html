@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+        <meta name="description" content="Resume for Emma McKay, including education, experience, service, and skills." />
+        <meta name="author" content="Emma McKay" />
+        <title>Emma McKay | Resume</title>
+        <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
+        <!-- Font Awesome icons (free version)-->
+        <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
+        <!-- Google fonts-->
+        <link href="https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css" />
+        <link href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css" />
+        <!-- Core theme CSS (includes Bootstrap)-->
+        <link href="css/styles.css" rel="stylesheet" />
+        <link href="css/stylesheet.css" rel="stylesheet" />
+        <style>
+            .resume-page {
+                background:
+                    linear-gradient(180deg, rgba(255, 248, 239, 0.9), rgba(245, 235, 223, 0.95));
+            }
+
+            header.masthead.resume-masthead {
+                background-image: url("website-pictures/54767681423_17e9355e03_o.jpg");
+                background-position: center 38%;
+            }
+
+            .resume-page .masthead::before {
+                background: linear-gradient(180deg, rgba(53, 39, 29, 0.42), rgba(53, 39, 29, 0.18));
+            }
+
+            .resume-layout-shell {
+                display: grid;
+                grid-template-columns: clamp(110px, 11vw, 152px) minmax(0, 1fr) clamp(110px, 11vw, 152px);
+                gap: 1.5rem;
+                align-items: start;
+                max-width: 1560px;
+                margin: 0 auto;
+                padding: 0 1.25rem 2rem;
+            }
+
+            .resume-photo-border {
+                position: sticky;
+                top: 6rem;
+            }
+
+            .resume-photo-stack {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                list-style: none;
+                margin: 0;
+                padding: 0.5rem 0 0;
+            }
+
+            .resume-photo-stack li + li {
+                margin-top: -1.65rem;
+            }
+
+            .resume-border-shot {
+                display: block;
+                width: 100%;
+                aspect-ratio: 3 / 4;
+                object-fit: cover;
+                border: 0.6rem solid rgba(255, 250, 244, 0.98);
+                border-radius: 22px;
+                background: #fff;
+                box-shadow: 0 16px 30px rgba(72, 49, 33, 0.16);
+            }
+
+            .resume-photo-border-left li:nth-child(odd) .resume-border-shot {
+                transform: rotate(-11deg) translateX(-0.55rem);
+            }
+
+            .resume-photo-border-left li:nth-child(even) .resume-border-shot {
+                transform: rotate(10deg) translateX(0.55rem);
+            }
+
+            .resume-photo-border-right li:nth-child(odd) .resume-border-shot {
+                transform: rotate(11deg) translateX(0.55rem);
+            }
+
+            .resume-photo-border-right li:nth-child(even) .resume-border-shot {
+                transform: rotate(-10deg) translateX(-0.55rem);
+            }
+
+            .resume-shell {
+                display: grid;
+                gap: 2rem;
+            }
+
+            .resume-actions {
+                display: flex;
+                justify-content: flex-end;
+                margin-bottom: 1.25rem;
+            }
+
+            .resume-download-button {
+                display: inline-flex;
+                align-items: center;
+                gap: 0.55rem;
+                padding: 0.65rem 1rem;
+                border: 1px solid rgba(83, 54, 34, 0.16);
+                border-radius: 999px;
+                background: rgba(255, 251, 243, 0.94);
+                color: #4d3b2e;
+                font-family: "Open Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+                font-size: 0.82rem;
+                font-weight: 700;
+                letter-spacing: 0.05em;
+                text-decoration: none;
+                text-transform: uppercase;
+                box-shadow: 0 10px 24px rgba(53, 39, 29, 0.08);
+                transition: transform 0.2s ease, box-shadow 0.2s ease, color 0.2s ease;
+            }
+
+            .resume-download-button:hover {
+                transform: translateY(-1px);
+                color: #8a5d47;
+                box-shadow: 0 14px 28px rgba(53, 39, 29, 0.12);
+            }
+
+            .resume-download-button i {
+                font-size: 0.9rem;
+            }
+
+            .resume-intro,
+            .resume-section {
+                padding: 2rem;
+                border: 1px solid rgba(83, 54, 34, 0.12);
+                border-radius: 24px;
+                background: rgba(255, 251, 243, 0.92);
+                box-shadow: 0 18px 40px rgba(53, 39, 29, 0.08);
+            }
+
+            .resume-intro {
+                display: grid;
+                gap: 1rem;
+            }
+
+            .resume-kicker {
+                margin: 0;
+                color: #8a5d47;
+                font-family: "Open Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+                font-size: 0.82rem;
+                font-weight: 800;
+                letter-spacing: 0.18em;
+                text-transform: uppercase;
+            }
+
+            .resume-contact {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 0.75rem 1.5rem;
+                color: #6a5445;
+                font-family: "Open Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+                font-size: 0.95rem;
+            }
+
+            .resume-contact a {
+                color: #6a5445;
+                text-decoration: none;
+            }
+
+            .resume-contact a:hover {
+                color: #8a5d47;
+            }
+
+            .resume-section-title {
+                margin: 0 0 1.5rem;
+                padding-bottom: 0.75rem;
+                border-bottom: 1px solid rgba(83, 54, 34, 0.14);
+                color: #35271d;
+                font-size: 1.45rem;
+                text-transform: uppercase;
+                letter-spacing: 0.06em;
+            }
+
+            .resume-entry + .resume-entry {
+                margin-top: 2rem;
+                padding-top: 2rem;
+                border-top: 1px solid rgba(83, 54, 34, 0.1);
+            }
+
+            .resume-entry-header {
+                display: flex;
+                justify-content: space-between;
+                gap: 1rem;
+                align-items: start;
+                margin-bottom: 0.35rem;
+            }
+
+            .resume-entry-title,
+            .resume-entry-location {
+                margin: 0;
+            }
+
+            .resume-entry-location,
+            .resume-entry-date {
+                text-align: right;
+            }
+
+            .resume-entry-location,
+            .resume-entry-date,
+            .resume-intro p,
+            .resume-entry p,
+            .resume-entry li {
+                color: #4d3b2e;
+            }
+
+            .resume-entry-subtitle {
+                margin: 0 0 0.85rem;
+                font-style: italic;
+                color: #6a5445;
+            }
+
+            .resume-entry ul {
+                margin: 0;
+                padding-left: 1.25rem;
+            }
+
+            .resume-entry li + li {
+                margin-top: 0.45rem;
+            }
+
+            .resume-skills {
+                display: grid;
+                gap: 0.8rem;
+            }
+
+            .resume-skills p {
+                margin: 0;
+            }
+
+            .resume-skills strong {
+                color: #35271d;
+            }
+
+            @media (max-width: 767.98px) {
+                .resume-intro,
+                .resume-section {
+                    padding: 1.5rem;
+                    border-radius: 20px;
+                }
+
+                .resume-entry-header {
+                    flex-direction: column;
+                }
+
+                .resume-entry-location,
+                .resume-entry-date {
+                    text-align: left;
+                }
+            }
+
+            @media (max-width: 1199.98px) {
+                .resume-layout-shell {
+                    grid-template-columns: 1fr;
+                    padding: 0 0 2rem;
+                }
+
+                .resume-photo-border {
+                    display: none;
+                }
+            }
+        </style>
+    </head>
+    <body class="resume-page" id="top">
+        <!-- Navigation-->
+        <nav class="navbar navbar-expand-lg navbar-light" id="mainNav">
+            <div class="container px-4 px-lg-5">
+                <a class="navbar-brand" href="index.html">Emma McKay</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+                    Menu
+                    <i class="fas fa-bars"></i>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarResponsive">
+                    <ul class="navbar-nav ms-auto py-4 py-lg-0">
+                        <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="index.html">Home</a></li>
+                        <li class="nav-item"><a class="nav-link active px-lg-3 py-3 py-lg-4" href="about.html" aria-current="page">Resume</a></li>
+                        <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="scratch.html">Scratch</a></li>
+                        <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="contact.html">Contact</a></li>
+                        <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="interactive_storybook.html">Interactive Story Book</a></li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+        <!-- Page Header-->
+        <header class="masthead resume-masthead">
+            <div class="container position-relative px-4 px-lg-5">
+                <div class="row gx-4 gx-lg-5 justify-content-center">
+                    <div class="col-md-10 col-lg-8 col-xl-7">
+                        <div class="page-heading">
+                            <h1>Resume</h1>
+                            <span class="subheading">Education, experience, service, and what you need to know about me.</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+        <!-- Main Content-->
+        <main class="mb-4">
+            <div class="resume-layout-shell">
+                <aside class="resume-photo-border resume-photo-border-left" aria-label="Photos of Emma">
+                    <ul class="resume-photo-stack">
+                        <li><img class="resume-border-shot" src="Photos/IMG_7400.JPG" alt="Emma smiling outdoors" loading="lazy" /></li>
+                        <li><img class="resume-border-shot" src="Photos/coster.JPG" alt="Emma portrait" loading="lazy" /></li>
+                        <li><img class="resume-border-shot" src="Photos/practice-140of153-original-2.jpg" alt="Emma in a candid moment" loading="lazy" /></li>
+                        <li><img class="resume-border-shot" src="Photos/59D7F52F-4F9E-4565-9A83-C09DB206065E-2.JPG" alt="Emma outdoors" loading="lazy" /></li>
+                    </ul>
+                </aside>
+
+                <div class="container px-4 px-lg-5">
+                    <div class="row gx-4 gx-lg-5 justify-content-center">
+                        <div class="col-md-10 col-lg-8 col-xl-7">
+                            <div class="resume-actions">
+                                <a class="resume-download-button" href="assets/resume/emma-mckay-resume.pdf" download>
+                                    <i class="fas fa-download" aria-hidden="true"></i>
+                                    <span>Download Resume</span>
+                                </a>
+                            </div>
+                            <div class="resume-shell">
+                                <section class="resume-intro">
+                                    <p class="resume-kicker">Emma McKay</p>
+                                    <p>
+                                        Experience Design and Management student building programs, events, and community-centered
+                                        experiences through entrepreneurship, operations, and service leadership.
+                                    </p>
+                                    <div class="resume-contact">
+                                        <span>Contact me using the Contact page in the Menu.</span>
+                                        <a href="https://linkedin.com/in/emma-grace-mckay" target="_blank" rel="noopener noreferrer" aria-label="Visit Emma McKay's LinkedIn profile">linkedin.com/in/emma-grace-mckay</a>
+                                    </div>
+                                </section>
+
+                                <section class="resume-section">
+                                    <h2 class="resume-section-title">Education</h2>
+
+                                    <article class="resume-entry">
+                                        <div class="resume-entry-header">
+                                            <h3 class="resume-entry-title">Brigham Young University - Marriott School of Business</h3>
+                                            <p class="resume-entry-location">Provo, UT</p>
+                                        </div>
+                                        <div class="resume-entry-header">
+                                            <p class="resume-entry-subtitle">Bachelor of Business, Experience Design and Management (GPA: 3.6)</p>
+                                            <p class="resume-entry-date">Expected Apr 2028</p>
+                                        </div>
+                                        <ul>
+                                            <li>Experience Design Society Member 2025-Present</li>
+                                            <li>Relevant Coursework: EXDM 300, Experiential Marketing, IS 201, Accounting 201</li>
+                                        </ul>
+                                    </article>
+
+                                <article class="resume-entry">
+                                    <div class="resume-entry-header">
+                                        <h3 class="resume-entry-title">Utah Valley University</h3>
+                                        <p class="resume-entry-location">Orem, UT</p>
+                                    </div>
+                                    <div class="resume-entry-header">
+                                        <p class="resume-entry-subtitle">Associates of Arts (GPA: 3.89)</p>
+                                        <p class="resume-entry-date">2024</p>
+                                    </div>
+                                </article>
+
+                                <article class="resume-entry">
+                                    <div class="resume-entry-header">
+                                        <h3 class="resume-entry-title">Snow College</h3>
+                                        <p class="resume-entry-location">Ephraim, UT</p>
+                                    </div>
+                                    <div class="resume-entry-header">
+                                        <p class="resume-entry-subtitle">General Studies (GPA: 3.92)</p>
+                                        <p class="resume-entry-date">2021-2022</p>
+                                    </div>
+                                </article>
+                            </section>
+
+                            <section class="resume-section">
+                                <h2 class="resume-section-title">Experience</h2>
+
+                                <article class="resume-entry">
+                                    <div class="resume-entry-header">
+                                        <h3 class="resume-entry-title">Cumorah Academy</h3>
+                                        <p class="resume-entry-location">Prague, Czechia</p>
+                                    </div>
+                                    <div class="resume-entry-header">
+                                        <p class="resume-entry-subtitle">Business Entrepreneurship Teacher/Mentor</p>
+                                        <p class="resume-entry-date">Apr 2026 - July 2026</p>
+                                    </div>
+                                    <ul>
+                                        <li>Designed and implemented an entrepreneurship curriculum, guiding international students through the process of building businesses from concept to launch.</li>
+                                        <li>Mentored students in one-on-one and group settings to develop business models, facilitating the launch of 12 student-led international businesses generating $500-$1,000 in revenue within the first 3 months.</li>
+                                    </ul>
+                                </article>
+
+                                <article class="resume-entry">
+                                    <div class="resume-entry-header">
+                                        <h3 class="resume-entry-title">Ballard Center for Social Impact</h3>
+                                        <p class="resume-entry-location">Provo, UT</p>
+                                    </div>
+                                    <div class="resume-entry-header">
+                                        <p class="resume-entry-subtitle">Head of Operations, Business for Good</p>
+                                        <p class="resume-entry-date">Sep 2025 - Present</p>
+                                    </div>
+                                    <ul>
+                                        <li>Designed and executed case competitions involving 28 teams, 23 judges, and 2 social impact companies, creating branding, marketing, and event materials to host 100+ attendees.</li>
+                                        <li>Organized and led a startup pitch competition featuring 6 student ventures, coordinating 10 judges, and facilitating the distribution of $20,000+ in grant funding.</li>
+                                        <li>Led speaker events, panels, and business trainings while partnering with BYU organizations (Crocker Fellowship, Sandbox, Rollins Center, SIOY), engaging 400+ students per semester in experiential learning opportunities.</li>
+                                    </ul>
+                                </article>
+
+                                <article class="resume-entry">
+                                    <div class="resume-entry-header">
+                                        <h3 class="resume-entry-title">Ensign Services</h3>
+                                        <p class="resume-entry-location">Provo, UT</p>
+                                    </div>
+                                    <div class="resume-entry-header">
+                                        <p class="resume-entry-subtitle">Internship, Design Manager</p>
+                                        <p class="resume-entry-date">Jan 2026 - Apr 2026</p>
+                                    </div>
+                                    <ul>
+                                        <li>Designed and managed a global nonprofit service experience for nurses across the Philippines, Rwanda, and Costa Rica, leading the full experience design process and investing 105+ hours in research, stakeholder development, and program design.</li>
+                                        <li>Conducted user-centered research and built partnerships with 40+ NGOs, securing 6 active collaborations to support program implementation and long-term impact. Developed a cost-effective two-week clinical and cultural immersion program, aligning international stakeholders and scaling operations to support a goal of 150+ nurses in the first year.</li>
+                                    </ul>
+                                </article>
+
+                                <article class="resume-entry">
+                                    <div class="resume-entry-header">
+                                        <h3 class="resume-entry-title">The Snowey Shack</h3>
+                                        <p class="resume-entry-location">Huntsville, UT</p>
+                                    </div>
+                                    <div class="resume-entry-header">
+                                        <p class="resume-entry-subtitle">Owner and Co-Manager</p>
+                                        <p class="resume-entry-date">Jun 2019 - Present</p>
+                                    </div>
+                                    <ul>
+                                        <li>Designed and implemented a comprehensive business model, including branding, marketing strategy, staff training, financial planning, and community outreach. Managed daily operations for a high-volume business serving 300+ customers per day.</li>
+                                        <li>Drove a 300% increase in revenue over 6 years by optimizing operations, strengthening brand presence, and enhancing customer experience.</li>
+                                    </ul>
+                                </article>
+                            </section>
+
+                            <section class="resume-section">
+                                <h2 class="resume-section-title">Service</h2>
+
+                                <article class="resume-entry">
+                                    <div class="resume-entry-header">
+                                        <h3 class="resume-entry-title">The Church of Jesus Christ of Latter-day Saints</h3>
+                                        <p class="resume-entry-location">Bentonville, AR - Czech/Slovak</p>
+                                    </div>
+                                    <div class="resume-entry-header">
+                                        <p class="resume-entry-subtitle">Full-Time Volunteer Representative</p>
+                                        <p class="resume-entry-date">Jul 2022 - Mar 2024</p>
+                                    </div>
+                                    <ul>
+                                        <li>Led and directed 20+ volunteers while training and mentoring 5 leaders and designing lesson plans for 100+ Czech participants, strengthening team performance and engagement.</li>
+                                        <li>Planned and executed a multi-country traveling choir for 80+ volunteers across 3 cities, coordinating logistics and delivering a large-scale cultural experience.</li>
+                                    </ul>
+                                </article>
+                            </section>
+
+                                <section class="resume-section">
+                                    <h2 class="resume-section-title">Personal</h2>
+                                    <div class="resume-skills">
+                                        <p><strong>Technical Skills:</strong> Adobe Creative Suite, MS Excel, Canva, Tableau, Web Development, Social Media Management</p>
+                                        <p><strong>Additional Skills:</strong> Customer Experience Design, Team Leadership, Community Outreach, Project Organization</p>
+                                        <p><strong>Awards:</strong> 3x Dean's List, Academic Scholarship Recipient</p>
+                                        <p><strong>Languages:</strong> Czech</p>
+                                    </div>
+                                </section>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <aside class="resume-photo-border resume-photo-border-right" aria-label="More photos of Emma">
+                    <ul class="resume-photo-stack">
+                        <li><img class="resume-border-shot" src="Photos/IMG_9584_Original-2.jpg" alt="Emma smiling in a portrait" loading="lazy" /></li>
+                        <li><img class="resume-border-shot" src="Photos/20231219_143110_Original-2.jpg" alt="Emma standing outdoors" loading="lazy" /></li>
+                        <li><img class="resume-border-shot" src="Photos/fqs-2025-10-04-121952.945-2.JPG" alt="Emma candid photo" loading="lazy" /></li>
+                        <li><img class="resume-border-shot" src="Photos/IMG_1950.jpg" alt="Emma in a posed portrait" loading="lazy" /></li>
+                    </ul>
+                </aside>
+            </div>
+        </main>
+        <div class="container px-4 px-lg-5 pb-3">
+            <div class="text-center">
+                <a href="#top">Jump to top</a>
+            </div>
+        </div>
+        <!-- Footer-->
+        <footer class="border-top">
+            <div class="container px-4 px-lg-5">
+                <div class="row gx-4 gx-lg-5 justify-content-center">
+                    <div class="col-md-10 col-lg-8 col-xl-7">
+                        <div class="small text-center text-muted fst-italic">Copyright &copy; Emma McKay 2026</div>
+                    </div>
+            
+                </div>
+            </div>
+        </footer>
+        <!-- Bootstrap core JS-->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+        <!-- Core theme JS-->
+        <script src="js/scripts.js"></script>
+    </body>
+</html>
