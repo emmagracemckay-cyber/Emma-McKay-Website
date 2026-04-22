@@ -27,12 +27,12 @@
 
             .home-intro-shell {
                 display: grid;
-                grid-template-columns: clamp(110px, 11vw, 152px) minmax(0, 1fr) clamp(110px, 11vw, 152px);
-                gap: 1.5rem;
+                grid-template-columns: clamp(130px, 15vw, 240px) minmax(0, 1fr) clamp(130px, 15vw, 240px);
+                gap: clamp(0.4rem, 0.9vw, 0.85rem);
                 align-items: start;
                 max-width: 1560px;
                 margin: 0 auto;
-                padding: 0 1.25rem;
+                padding: 0 0.75rem;
             }
 
             .home-photo-border {
@@ -46,11 +46,11 @@
                 align-items: center;
                 list-style: none;
                 margin: 0;
-                padding: 0.5rem 0 0;
+                padding: 0.25rem 0 0;
             }
 
             .home-photo-stack li + li {
-                margin-top: -1.65rem;
+                margin-top: -2.2rem;
             }
 
             .home-border-shot {
@@ -58,26 +58,26 @@
                 width: 100%;
                 aspect-ratio: 3 / 4;
                 object-fit: cover;
-                border: 0.6rem solid rgba(255, 250, 244, 0.98);
-                border-radius: 22px;
+                border: clamp(0.45rem, 0.85vw, 0.75rem) solid rgba(255, 250, 244, 0.98);
+                border-radius: clamp(18px, 1.8vw, 24px);
                 background: #fff;
                 box-shadow: 0 16px 30px rgba(72, 49, 33, 0.16);
             }
 
             .home-photo-border-left li:nth-child(odd) .home-border-shot {
-                transform: rotate(-11deg) translateX(-0.55rem);
+                transform: rotate(-11deg) translateX(-0.35rem);
             }
 
             .home-photo-border-left li:nth-child(even) .home-border-shot {
-                transform: rotate(10deg) translateX(0.55rem);
+                transform: rotate(10deg) translateX(0.35rem);
             }
 
             .home-photo-border-right li:nth-child(odd) .home-border-shot {
-                transform: rotate(11deg) translateX(0.55rem);
+                transform: rotate(11deg) translateX(0.35rem);
             }
 
             .home-photo-border-right li:nth-child(even) .home-border-shot {
-                transform: rotate(-10deg) translateX(-0.55rem);
+                transform: rotate(-10deg) translateX(-0.35rem);
             }
 
             .home-intro-layout {
@@ -207,7 +207,7 @@
                 }
             }
 
-            @media (max-width: 1199.98px) {
+            @media (max-width: 991.98px) {
                 .home-intro-shell {
                     grid-template-columns: 1fr;
                     padding: 0;
